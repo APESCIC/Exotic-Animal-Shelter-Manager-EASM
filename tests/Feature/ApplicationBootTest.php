@@ -12,7 +12,8 @@ class ApplicationBootTest extends TestCase
 
         $response->assertOk()
             ->assertSee('Exotic Animal Shelter Manager', false)
-            ->assertSee(config('app.version'), false);
+            ->assertSee(config('app.version'), false)
+            ->assertSee('prefers-color-scheme: dark', false);
     }
 
     public function test_uk_defaults_are_used_at_boot(): void

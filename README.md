@@ -4,7 +4,7 @@ Self-hosted software for one exotic-animal shelter per install. Stack: **Laravel
 
 UK-first defaults: locale `en_GB`, timezone `Europe/London`. Display dates as `dd/mm/yyyy` land with settings (#15), not this scaffold.
 
-See [AGENTS.md](AGENTS.md) for product constraints and implement order (v0.1.0 through v1.0.0). This PR is **#9 only**. v0.1.0 continues as #10 installer, then #11 auth/roles, then #15 settings — do not start the next milestone until this foundation sequence is done.
+See [issue #1](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/1) for product constraints and implement order (v0.1.0 through v1.0.0). `AGENTS.md` is added by [PR #30](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/pull/30) and is not part of this scaffold. This PR is **#9 only**. v0.1.0 continues as #10 installer, then #11 auth/roles, then #15 settings — do not start the next milestone until this foundation sequence is done.
 
 Tracked against [issue #9](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/9) under [epic #2](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/2) / [plan #1](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/1).
 
@@ -39,6 +39,7 @@ Edit `.env`:
 
 - `APP_URL` — public HTTPS URL
 - `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` — empty MySQL/MariaDB database created in the host panel
+- Keep `APP_ENV=production` and `APP_DEBUG=false` on a public host
 - Keep `APP_LOCALE=en_GB` and `APP_TIMEZONE=Europe/London` unless you have a reason to change them
 
 Then:
@@ -67,6 +68,9 @@ Laravel's built-in `GET /up` probe remains available.
 composer install
 cp .env.example .env
 php artisan key:generate
+# Local overrides (the example file is production-safe):
+# APP_ENV=local
+# APP_DEBUG=true
 # Create an empty MySQL/MariaDB database named easm, then:
 php artisan migrate
 php artisan serve
