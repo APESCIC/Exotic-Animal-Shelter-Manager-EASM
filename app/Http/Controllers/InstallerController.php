@@ -1,0 +1,45 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\InstallRequest;
+use App\Install\DatabaseConnectionException;
+use App\Install\Installer;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
+use Throwable;
+
+class InstallerController extends Controller
+{
+    /**
+     * Show the first-run installer wizard.
+     */
+    public function show(): View
+    {
+        return view('installer', [
+            'timezones' => timezone_identifiers_list(),
+        ]);
+    }
+
+    /**
+     * Complete installation for this shelter.
+     */
+    public function store(InstallRequest $request, Installer $installer): RedirectResponse
+    {
+        try {
+            $installer->install($request->validated());
+        } catch (DatabaseConnectionException $e) {
+            return back()
+                ->withInput($request->except('admin_password', 'admin_password_confirmation'))
+                ->withErrors(['db_host' => $e->getMessage()]);
+        } catch (Throwable $e) {
+            report($e);
+
+            return back()
+                ->withInput($request->except('admin_password', 'admin_password_confirmation'))
+                ->withErrors(['organisation' => 'Installation failed. Check the database credentials and that storage/ is writable.']);
+        }
+
+        return redirect('/');
+    }
+}

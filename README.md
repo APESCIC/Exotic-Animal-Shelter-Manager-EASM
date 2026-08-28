@@ -2,11 +2,11 @@
 
 Self-hosted software for one exotic-animal shelter per install. Stack: **Laravel + PHP 8 + MySQL/MariaDB** on ordinary web hosting. One `composer install` at setup, not on every request. It is a new application, not a fork of Animal Shelter Manager / sheltermanager.com. Species stay free-text — there is no dog/cat vocabulary.
 
-UK-first defaults: locale `en_GB`, timezone `Europe/London`. Display dates as `dd/mm/yyyy` land with settings (#15), not this scaffold.
+UK-first defaults: locale `en_GB`, timezone `Europe/London`. Display dates as `dd/mm/yyyy` land with settings (#15).
 
-See [AGENTS.md](AGENTS.md) for product constraints and implement order (v0.1.0 through v1.0.0). This PR is **#9 only**. v0.1.0 continues as #10 installer, then #11 auth/roles, then #15 settings — do not start the next milestone until this foundation sequence is done.
+See [AGENTS.md](AGENTS.md) for product constraints and implement order (v0.1.0 through v1.0.0). v0.1.0 continues as #11 auth/roles, then #15 settings — do not start those until this installer is done.
 
-Tracked against [issue #9](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/9) under [epic #2](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/2) / [plan #1](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/1).
+Tracked against [issue #10](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/10) under [epic #2](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/2) / [plan #1](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/1).
 
 ## Hosting matrix
 
@@ -24,40 +24,42 @@ Laravel 13 needs PHP 8.3 or newer. Composer runs at install time only — not on
 
 ## Install
 
-Unzip a release or clone the repository, then run Composer **once**:
+Unzip a release or clone the repository, then run Composer **once**. The web wizard collects database credentials, the first admin user, organisation name, and timezone (default Europe/London).
 
 ```bash
 git clone https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM.git
 cd Exotic-Animal-Shelter-Manager-EASM
 
 composer install --no-dev --optimize-autoloader
-cp .env.example .env
-php artisan key:generate
 ```
 
-Edit `.env`:
+From a zip:
 
-- `APP_URL` — public HTTPS URL
-- `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` — empty MySQL/MariaDB database created in the host panel
-- Keep `APP_LOCALE=en_GB` and `APP_TIMEZONE=Europe/London` unless you have a reason to change them
+```bash
+unzip easm.zip
+cd easm   # directory name may match the release archive
+composer install --no-dev --optimize-autoloader
+```
+
+`composer install` copies `.env.example` to `.env` when needed and fills `APP_KEY` if it is empty. It does not migrate and does not mark the app installed.
 
 Then:
 
-```bash
-php artisan migrate --force
-```
+1. Create an empty MySQL or MariaDB database in the host panel.
+2. Point the vhost document root at `public/`.
+3. Make `storage/` and `bootstrap/cache/` writable by the web server.
+4. Open the site in a browser. You are redirected to `/install`.
+5. Enter database credentials, organisation name, timezone, and the first admin user.
 
-Point the vhost document root at `public/`. Make `storage/` and `bootstrap/cache/` writable by the web server.
+The wizard writes `.env`, runs migrations, creates that admin, and writes `storage/app/installed`. After that, `/install` will not run again.
 
-Open `/health`. You should see JSON with `"status":"ok"` and a `version` field. The home page also boots without a Node/npm step.
+Open `/health`. You should see JSON with `"status":"ok"` and a `version` field.
 
 Development install uses `composer install` (with dev packages) instead of `--no-dev`.
 
-The web installer wizard is [#10](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/10) and is not in this scaffold.
-
 ## Health and version
 
-`GET /health` returns application status, name, and version. It checks that PHP can open the configured database and does not include secrets, `.env` values, or credentials.
+`GET /health` returns application status, name, and version. It checks that PHP can open the configured database and does not include secrets, `.env` values, or credentials. It stays available before and after the installer.
 
 Laravel's built-in `GET /up` probe remains available.
 
@@ -65,24 +67,23 @@ Laravel's built-in `GET /up` probe remains available.
 
 ```bash
 composer install
-cp .env.example .env
-php artisan key:generate
-# Create an empty MySQL/MariaDB database named easm, then:
-php artisan migrate
 php artisan serve
 ```
 
-`php artisan serve` listens on http://127.0.0.1:8000/. Node and Vite are optional and are not required to boot or to hit `/health`.
+Open http://127.0.0.1:8000/install and complete the wizard against a local MySQL/MariaDB database. Node and Vite are optional and are not required to boot, install, or hit `/health`.
+
+If `php artisan serve` reloads when the wizard writes `.env`, refresh the home page — install has already finished.
 
 ```bash
 composer test
 composer lint
 ```
 
-## What this scaffold does not include
+PHPUnit treats the app as already installed (`APP_INSTALLED=true`) except in installer tests.
 
-- Installer wizard ([#10](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/10))
-- Auth and roles ([#11](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/11))
+## What this does not include
+
+- Auth and roles ([#11](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/11)) — the installer only creates the first admin user
 - Settings UI for org name and date formats ([#15](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/15))
 - Animal records (v0.2 #12), public site, Cloudron OIDC / MyAPES-Account auth copy
 
