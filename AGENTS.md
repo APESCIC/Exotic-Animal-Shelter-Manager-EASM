@@ -29,7 +29,7 @@ Finish a milestone before starting the next.
 
 1. #12 animal records (photo, enclosure, CITES, DWA)
 2. #14 people/contacts
-3. #13 movements (intake/foster/adopt/transfer)
+3. #13 movements (intake, hold, quarantine, foster, trial adoption, adopt, reclaim, transfer, deceased — first movements; quarantine for exotic intake)
 4. #28 lost/found matching
 
 ### v0.3.0 Medical, diary and care ([milestone/3](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/milestone/3), epic #4)
@@ -37,6 +37,7 @@ Finish a milestone before starting the next.
 1. #16 vaccinations/tests/treatments/diets
 2. #17 staff diary/tasks
 3. #18 media attachments
+4. #31 custom fields (after #12 enclosure/CITES/DWA; does not block first animal records)
 
 ### v0.4.0 Public adoption and applications ([milestone/4](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/milestone/4), epic #5)
 
