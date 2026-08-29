@@ -2,6 +2,9 @@
 
 namespace App\Install;
 
+use Illuminate\Support\Facades\Schema;
+use Throwable;
+
 class InstallationState
 {
     /**
@@ -9,11 +12,26 @@ class InstallationState
      */
     public function isInstalled(): bool
     {
-        if (is_file($this->installedPath())) {
-            return true;
+        $markedInstalled = is_file($this->installedPath())
+            || filter_var(config('easm.installed'), FILTER_VALIDATE_BOOLEAN);
+
+        if (! $markedInstalled) {
+            return false;
         }
 
-        return filter_var(config('easm.installed'), FILTER_VALIDATE_BOOLEAN);
+        return $this->databaseSchemaReady();
+    }
+
+    /**
+     * Whether core migration tables exist (install lock alone is not enough).
+     */
+    private function databaseSchemaReady(): bool
+    {
+        try {
+            return Schema::hasTable('migrations');
+        } catch (Throwable) {
+            return false;
+        }
     }
 
     /**

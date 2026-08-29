@@ -63,16 +63,16 @@
                 <legend>Database</legend>
                 <p class="hint">Create an empty MySQL or MariaDB database in the host panel, then enter its credentials.</p>
                 <label for="db_host">Host</label>
-                <input id="db_host" name="db_host" value="{{ old('db_host', '127.0.0.1') }}" required autocomplete="off">
+                <input id="db_host" name="db_host" value="{{ old('db_host', $dbDefaults['host']) }}" required autocomplete="off">
 
                 <label for="db_port">Port</label>
-                <input id="db_port" name="db_port" type="number" min="1" max="65535" value="{{ old('db_port', '3306') }}" required>
+                <input id="db_port" name="db_port" type="number" min="1" max="65535" value="{{ old('db_port', $dbDefaults['port']) }}" required>
 
                 <label for="db_database">Database name</label>
-                <input id="db_database" name="db_database" value="{{ old('db_database', 'easm') }}" required autocomplete="off">
+                <input id="db_database" name="db_database" value="{{ old('db_database', $dbDefaults['database']) }}" required autocomplete="off">
 
                 <label for="db_username">Username</label>
-                <input id="db_username" name="db_username" value="{{ old('db_username', 'easm') }}" required autocomplete="off">
+                <input id="db_username" name="db_username" value="{{ old('db_username', $dbDefaults['username']) }}" required autocomplete="off">
 
                 <label for="db_password">Password</label>
                 <input id="db_password" name="db_password" type="password" value="{{ old('db_password') }}" autocomplete="new-password">

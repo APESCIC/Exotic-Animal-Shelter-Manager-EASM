@@ -18,6 +18,12 @@ class InstallerController extends Controller
     {
         return view('installer', [
             'timezones' => timezone_identifiers_list(),
+            'dbDefaults' => [
+                'host' => (string) config('database.connections.mysql.host', '127.0.0.1'),
+                'port' => (string) config('database.connections.mysql.port', '3306'),
+                'database' => (string) config('database.connections.mysql.database', 'easm'),
+                'username' => (string) config('database.connections.mysql.username', 'root'),
+            ],
         ]);
     }
 
