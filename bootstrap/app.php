@@ -3,6 +3,7 @@
 use App\Http\Controllers\HealthController;
 use App\Http\Middleware\EnsureInstallerAccess;
 use App\Http\Middleware\EnsureUserHasRole;
+use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -32,7 +33,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->priority([
             EnsureInstallerAccess::class,
-            \Illuminate\Auth\Middleware\Authenticate::class,
+            Authenticate::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
