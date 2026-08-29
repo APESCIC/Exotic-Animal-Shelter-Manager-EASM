@@ -1,0 +1,51 @@
+---
+description: Gated ship lifecycle — commit gate, post-CI next actions, ask GitHub Release when the operator decides (no deploy)
+alwaysApply: true
+---
+
+# Ship-gate workflow
+
+Start and finish product work from a Cursor agent request. Do not auto-merge, auto-deploy to hosting, or create a GitHub Release without an explicit user choice at each gate.
+
+EASM is **self-hosted**: shelters download or clone the app and install on their own web hosting. Agents must **never** invent Cloudron/`workflow_dispatch` deploy steps, push code to customer servers, or assume a live production URL.
+
+## Gates
+
+At each gate, end the turn with a numbered list of next best actions and **one recommended reply**. Wait for the user before continuing.
+
+### Commit gate (before first push / PR for the slice)
+
+When implementation for this slice is ready (focused tests run or failure documented; no secrets in the tree):
+
+Recommended usually: commit and open/update the PR when the slice is reviewable.
+
+1. Commit now
+2. Commit and open/update PR
+3. Keep working uncommitted
+
+Never commit silently — this gate *is* the ask. Prefer a clear WIP checkpoint only when the user wants one saved.
+
+### After PR CI is green
+
+Recommended usually: merge when checks are OK.
+
+1. Merge the PR
+2. Fix remaining review / CI issues
+3. Leave PR open / stop
+
+Never merge unless the user already ordered merge or picks option 1.
+
+### After merge is verified on `main`
+
+There is **no deploy gate**. Installs stay download + Composer + `/install` (see README).
+
+Recommended: skip release unless the user already asked to cut one.
+
+1. Create GitHub Release now
+2. Skip release / stop
+
+Never create the release silently. Confirm tag/version with the user when unclear (`APP_VERSION` / `config('app.version')` today; no root `VERSION` / `releases.json` yet).
+
+## Completion
+
+Only after merge is verified, and after any chosen GitHub Release succeeds, give the completion confirmation (PR URL/number, merge SHA, target branch, release URL if created, linked issue closed/updated). Offer to archive the agent; do not archive silently.
