@@ -62,6 +62,15 @@ Finish a milestone before starting the next.
 
 Plan epic is #1 (unmiled).
 
+## Ship-gate
+
+Work starts and finishes from a Cursor agent request. Follow `.cursor/rules/ship-gate.mdc` and `.cursor/skills/ship-gate/SKILL.md`:
+
+1. When a slice is ready, present the **commit gate** (never commit silently).
+2. Open/update the PR; watch CI until green; present the **merge gate**.
+3. After merge on `main`, present the **GitHub Release gate** only as an opt-in — create a release when the operator decides, never silently.
+4. **No deploy gate.** Shelters download/clone and install on their own hosting (Composer + `/install`). Do not invent Cloudron or CI deploy steps.
+
 ## GitHub issues
 
 - Search **this repo** for duplicates. Never open issues in other repos.

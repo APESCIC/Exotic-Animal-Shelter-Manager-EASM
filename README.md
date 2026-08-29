@@ -86,6 +86,12 @@ composer lint
 
 PHPUnit treats the app as already installed (`APP_INSTALLED=true`) except in installer tests.
 
+## Releases
+
+There is no CI or agent deploy to customer hosting. Shelters install from a clone or zip (Composer + `/install`) as above.
+
+GitHub Releases are optional and operator-gated: after a merge to `main`, Cursor agents ask before creating a release (see [AGENTS.md](AGENTS.md) ship-gate). CI (`.github/workflows/ci.yml`) runs tests only.
+
 ## What this does not include
 
 - People/contacts (#14), movements (#13), lost/found (#28), public site, Cloudron OIDC / MyAPES-Account auth copy
