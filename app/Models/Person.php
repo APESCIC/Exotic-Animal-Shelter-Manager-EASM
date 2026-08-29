@@ -7,6 +7,7 @@ use Database\Factories\PersonFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Person extends Model
 {
@@ -43,6 +44,14 @@ class Person extends Model
             'banned' => 'boolean',
             'homechecked' => 'boolean',
         ];
+    }
+
+    /**
+     * @return HasMany<Movement, $this>
+     */
+    public function movements(): HasMany
+    {
+        return $this->hasMany(Movement::class);
     }
 
     public function categoryLabel(): string

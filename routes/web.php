@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\AnimalController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\InstallerController;
+use App\Http\Controllers\MovementController;
 use App\Http\Controllers\PersonController;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Support\Facades\Route;
@@ -33,6 +34,8 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/animals/{animal}', [AnimalController::class, 'show'])->name('animals.show');
     Route::get('/animals/{animal}/edit', [AnimalController::class, 'edit'])->name('animals.edit');
     Route::put('/animals/{animal}', [AnimalController::class, 'update'])->name('animals.update');
+    Route::get('/animals/{animal}/movements/create', [MovementController::class, 'create'])->name('animals.movements.create');
+    Route::post('/animals/{animal}/movements', [MovementController::class, 'store'])->name('animals.movements.store');
 
     Route::get('/people', [PersonController::class, 'index'])->name('people.index');
     Route::get('/people/create', [PersonController::class, 'create'])->name('people.create');

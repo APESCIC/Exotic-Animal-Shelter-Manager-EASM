@@ -39,4 +39,13 @@ enum UserRole: string
             self::Volunteer, self::Readonly => false,
         };
     }
+
+    public function canManageMovements(): bool
+    {
+        return match ($this) {
+            self::Admin, self::Staff => true,
+            self::Volunteer, self::Readonly => false,
+        };
+    }
 }
+
