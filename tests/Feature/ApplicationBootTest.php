@@ -2,13 +2,19 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ApplicationBootTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_the_application_boots_and_serves_the_home_page(): void
     {
-        $response = $this->get('/');
+        $user = User::factory()->admin()->create();
+
+        $response = $this->actingAs($user)->get('/');
 
         $response->assertOk()
             ->assertSee('Exotic Animal Shelter Manager', false)

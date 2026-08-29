@@ -4,9 +4,9 @@ Self-hosted software for one exotic-animal shelter per install. Stack: **Laravel
 
 UK-first defaults: locale `en_GB`, timezone `Europe/London`. Display dates as `dd/mm/yyyy` land with settings (#15).
 
-See [AGENTS.md](AGENTS.md) for product constraints and implement order (v0.1.0 through v1.0.0). v0.1.0 continues as #11 auth/roles, then #15 settings — do not start those until this installer is done.
+See [AGENTS.md](AGENTS.md) for product constraints and implement order (v0.1.0 through v1.0.0). v0.1.0 continues as #15 settings after auth (#11).
 
-Tracked against [issue #10](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/10) under [epic #2](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/2) / [plan #1](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/1).
+Tracked against [issue #11](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/11) under [epic #2](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/2) / [plan #1](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/1).
 
 ## Hosting matrix
 
@@ -51,7 +51,9 @@ Then:
 4. Open the site in a browser. You are redirected to `/install`.
 5. Enter database credentials, organisation name, timezone, and the first admin user.
 
-The wizard writes `.env`, runs migrations, creates that admin, and writes `storage/app/installed`. After that, `/install` will not run again.
+The wizard writes `.env`, runs migrations, creates that admin (role `admin`), and writes `storage/app/installed`. After that, `/install` will not run again.
+
+Sign in at `/login` with the admin email and password. Roles are admin, staff, volunteer, and readonly. Only admins can open `/admin`. Successful logins are written to `login_events`.
 
 Open `/health`. You should see JSON with `"status":"ok"` and a `version` field.
 
@@ -70,7 +72,7 @@ composer install
 php artisan serve
 ```
 
-Open http://127.0.0.1:8000/install and complete the wizard against a local MySQL/MariaDB database. Node and Vite are optional and are not required to boot, install, or hit `/health`.
+Open http://127.0.0.1:8000/install and complete the wizard against a local MySQL/MariaDB database, then sign in at `/login`. Node and Vite are optional and are not required to boot, install, or hit `/health`.
 
 If `php artisan serve` reloads when the wizard writes `.env`, refresh the home page — install has already finished.
 
@@ -83,7 +85,6 @@ PHPUnit treats the app as already installed (`APP_INSTALLED=true`) except in ins
 
 ## What this does not include
 
-- Auth and roles ([#11](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/11)) — the installer only creates the first admin user
 - Settings UI for org name and date formats ([#15](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/15))
 - Animal records (v0.2 #12), public site, Cloudron OIDC / MyAPES-Account auth copy
 

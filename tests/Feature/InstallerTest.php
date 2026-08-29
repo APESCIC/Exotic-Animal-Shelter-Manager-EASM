@@ -2,16 +2,19 @@
 
 namespace Tests\Feature;
 
+use App\Enums\UserRole;
 use App\Install\DatabaseConnector;
 use App\Install\EnvFile;
 use App\Install\InstallationState;
 use App\Install\Installer;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class InstallerTest extends TestCase
 {
+    use RefreshDatabase;
     private string $envPath;
 
     private string $installedPath;
@@ -81,6 +84,7 @@ class InstallerTest extends TestCase
         $this->assertNotNull($admin);
         $this->assertSame('Shelter Admin', $admin->name);
         $this->assertTrue(Hash::check('a-secure-password', $admin->password));
+        $this->assertSame(UserRole::Admin, $admin->role);
         $this->assertSame(1, User::query()->count());
 
         $this->get(route('install.show'))->assertRedirect('/');
