@@ -1,6 +1,6 @@
 ---
 name: ship-gate
-description: Gated ship lifecycle — when-to-commit guidance, next-actions menus, optional GitHub Release. Use when work is ready to commit, PR checks are green, after merge to main, or when the user asks to ship or release. No hosting deploy.
+description: Gated ship lifecycle — pre-commit verification, when-to-commit guidance, next-actions menus, optional GitHub Release. Use when work is ready to commit, PR checks are green, after merge to main, or when the user asks to ship or release. No hosting deploy.
 ---
 
 # Ship-gate
@@ -21,13 +21,27 @@ End the turn with:
 
 Do not proceed past a gate without an explicit user pick (or a prior explicit order that covers that gate).
 
+## Pre-commit verification (required)
+
+Run **before** the commit gate. On Windows, source `scripts/local/use-laragon.ps1` first. Do **not** run Pint during feature work — only here.
+
+| Step | Command / check | Pass criteria |
+|------|-----------------|---------------|
+| Tests | `composer test` | Exit 0 (full suite) |
+| Lint | `composer lint` | Exit 0; if fail → one `composer format` → re-lint once |
+| UI smoke | Laragon up; browser or HTTP | Only when HTTP/views/routes changed: `/health` ok; changed path loads |
+
+If any step fails: report output, fix or stop. **Do not** offer commit options. WIP checkpoint commits only when the user explicitly asks to save broken work.
+
+Also confirm: no secrets (`.env`, credentials) staged; slice work on the `cursor/...` branch is complete for this slice.
+
 ## When committing is best
 
-Commit when **all** that apply are true:
+Commit when **all** apply:
 
-1. Feature/fix work on the `cursor/...` branch is complete for this slice (or a clear WIP checkpoint the user wants saved).
-2. Focused tests for the change have been run (or failure is documented and the user still wants a commit).
-3. No secrets (`.env`, credentials) are staged.
+1. Pre-commit verification passed (above).
+2. Feature/fix work on the `cursor/...` branch is complete for this slice (or user explicitly requested a WIP checkpoint).
+3. No secrets staged.
 
 Then present the **commit gate** before the first push / PR update for that slice.
 

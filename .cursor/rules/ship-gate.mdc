@@ -1,5 +1,5 @@
 ---
-description: Gated ship lifecycle — commit gate, post-CI next actions, ask GitHub Release when the operator decides (no deploy)
+description: Gated ship lifecycle — pre-commit verification, commit gate, post-CI next actions, optional GitHub Release (no deploy)
 alwaysApply: true
 ---
 
@@ -9,13 +9,23 @@ Start and finish product work from a Cursor agent request. Do not auto-merge, au
 
 EASM is **self-hosted**: shelters download or clone the app and install on their own web hosting. Agents must **never** invent Cloudron/`workflow_dispatch` deploy steps, push code to customer servers, or assume a live production URL.
 
+## Pre-commit verification (required)
+
+Before the **commit gate**, run and record results (source `scripts/local/use-laragon.ps1` on Windows):
+
+1. **Tests** — `composer test` (full suite). Must exit 0.
+2. **Lint** — `composer lint` once. Must exit 0. If it fails: at most one `composer format`, then re-run lint once. Do not loop or run Pint mid-work.
+3. **UI smoke** (when the slice touched HTTP/views/routes) — Laragon Apache + MySQL up; `GET http://easm.test/health` returns ok (or same URL with `Host: easm.test` if DNS is not set); quick browser smoke of the changed path.
+
+If any step fails: report failures, fix or stop. **Do not** present commit / commit+PR options. WIP commits only when the user explicitly asks to save broken work.
+
+No secrets (`.env`, credentials) staged.
+
 ## Gates
 
 At each gate, end the turn with a numbered list of next best actions and **one recommended reply**. Wait for the user before continuing.
 
-### Commit gate (before first push / PR for the slice)
-
-When implementation for this slice is ready (focused tests run or failure documented; no secrets in the tree):
+### Commit gate (after verification passes)
 
 Recommended usually: commit and open/update the PR when the slice is reviewable.
 
@@ -23,7 +33,7 @@ Recommended usually: commit and open/update the PR when the slice is reviewable.
 2. Commit and open/update PR
 3. Keep working uncommitted
 
-Never commit silently — this gate *is* the ask. Prefer a clear WIP checkpoint only when the user wants one saved.
+Never commit silently — this gate *is* the ask.
 
 ### After PR CI is green
 

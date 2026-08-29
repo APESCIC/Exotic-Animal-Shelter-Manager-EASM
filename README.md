@@ -74,21 +74,61 @@ Laravel's built-in `GET /up` probe remains available.
 
 ## Local development
 
+On Windows, prefer **[Laragon](https://laragon.org/)** (Apache + MySQL + PHP) instead of `php artisan serve` or a separate Winget PHP.
+
+### Laragon (recommended on Windows)
+
+1. Start Laragon (Apache and MySQL).
+2. From a PowerShell session in the repo root, load Laragon’s PHP/Composer onto `PATH`:
+
+```powershell
+. .\scripts\local\use-laragon.ps1
+composer install
+```
+
+3. Point a site at this clone’s `public/` directory. Easiest: a directory junction so Laragon’s auto-host works:
+
+```powershell
+cmd /c mklink /J C:\laragon\www\easm "%CD%"
+```
+
+Open **http://easm.test** (document root must be `public/`). If the auto-host serves the repo root instead of `public/`, add a Laragon/Apache virtual host with `DocumentRoot` …`/easm/public`, or use Laragon’s “Quick add” for a site whose root is `public/`.
+
+After the first junction or vhost setup, **restart Laragon Apache** so `easm.test` resolves. Ensure `127.0.0.1 easm.test` is in your hosts file (Laragon usually adds it; otherwise add manually).
+
+4. Local `.env` (never commit it) should use Laragon MySQL, for example:
+
+```env
+APP_URL=http://easm.test
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=easm
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+Create an empty `easm` database in HeidiSQL / MySQL if needed, then open http://easm.test/install (or `/login` if already installed).
+
+### Without Laragon
+
 ```bash
 composer install
 php artisan serve
 ```
 
-Open http://127.0.0.1:8000/install and complete the wizard against a local MySQL/MariaDB database, then sign in at `/login`. Node and Vite are optional and are not required to boot, install, or hit `/health`.
+Open http://127.0.0.1:8000/install against a local MySQL/MariaDB database, then sign in at `/login`. If `php artisan serve` reloads when the wizard writes `.env`, refresh the home page — install has already finished.
 
-If `php artisan serve` reloads when the wizard writes `.env`, refresh the home page — install has already finished.
+Node and Vite are optional and are not required to boot, install, or hit `/health`.
+
+### Tests and lint
 
 ```bash
 composer test
 composer lint
 ```
 
-PHPUnit treats the app as already installed (`APP_INSTALLED=true`) except in installer tests.
+PHPUnit treats the app as already installed (`APP_INSTALLED=true`) except in installer tests. Agents must not run Pint while editing; lint is for CI and the pre-commit verification gate (see AGENTS.md / ship-gate).
 
 ## Releases
 
