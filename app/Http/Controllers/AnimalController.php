@@ -1,0 +1,136 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Enums\AnimalSex;
+use App\Http\Requests\StoreAnimalRequest;
+use App\Http\Requests\UpdateAnimalRequest;
+use App\Models\Animal;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\View\View;
+
+class AnimalController extends Controller
+{
+    public function index(Request $request): View
+    {
+        $q = $request->string('q')->toString();
+        $location = $request->string('location')->toString();
+
+        $animals = Animal::query()
+            ->search($q !== '' ? $q : null)
+            ->atLocation($location !== '' ? $location : null)
+            ->orderBy('name')
+            ->paginate(20)
+            ->withQueryString();
+
+        $locations = Animal::query()
+            ->whereNotNull('location')
+            ->where('location', '!=', '')
+            ->distinct()
+            ->orderBy('location')
+            ->pluck('location');
+
+        return view('animals.index', [
+            'animals' => $animals,
+            'locations' => $locations,
+            'q' => $q,
+            'location' => $location,
+        ]);
+    }
+
+    public function shelter(): View
+    {
+        $groups = Animal::query()
+            ->orderBy('location')
+            ->orderBy('name')
+            ->get()
+            ->groupBy(fn (Animal $animal) => $animal->location ?: 'Unassigned');
+
+        return view('animals.shelter', [
+            'groups' => $groups,
+        ]);
+    }
+
+    public function create(): View
+    {
+        $this->authorizeManage();
+
+        return view('animals.create', [
+            'animal' => new Animal(['sex' => AnimalSex::Unknown]),
+        ]);
+    }
+
+    public function store(StoreAnimalRequest $request): RedirectResponse
+    {
+        $data = $this->validatedAnimalData($request);
+
+        if ($request->hasFile('primary_photo')) {
+            $data['primary_photo_path'] = $request->file('primary_photo')->store('animals', 'public');
+        }
+
+        $animal = Animal::query()->create($data);
+
+        return redirect()
+            ->route('animals.show', $animal)
+            ->with('status', 'Animal record created.');
+    }
+
+    public function show(Animal $animal): View
+    {
+        return view('animals.show', [
+            'animal' => $animal,
+        ]);
+    }
+
+    public function edit(Animal $animal): View
+    {
+        $this->authorizeManage();
+
+        return view('animals.edit', [
+            'animal' => $animal,
+        ]);
+    }
+
+    public function update(UpdateAnimalRequest $request, Animal $animal): RedirectResponse
+    {
+        $data = $this->validatedAnimalData($request);
+
+        if ($request->hasFile('primary_photo')) {
+            if ($animal->primary_photo_path) {
+                Storage::disk('public')->delete($animal->primary_photo_path);
+            }
+            $data['primary_photo_path'] = $request->file('primary_photo')->store('animals', 'public');
+        }
+
+        $animal->update($data);
+
+        return redirect()
+            ->route('animals.show', $animal)
+            ->with('status', 'Animal record updated.');
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function validatedAnimalData(StoreAnimalRequest $request): array
+    {
+        $data = $request->safe()->except(['primary_photo']);
+        $data['non_shelter'] = $request->boolean('non_shelter');
+
+        return $data;
+    }
+
+    private function authorizeManage(): void
+    {
+        abort_unless($this->requestUserCanManage(), 403);
+    }
+
+    private function requestUserCanManage(): bool
+    {
+        $role = request()->user()?->role;
+
+        return $role !== null && $role->canManageAnimals();
+    }
+}

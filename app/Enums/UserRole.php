@@ -23,4 +23,12 @@ enum UserRole: string
     {
         return $this === self::Admin;
     }
+
+    public function canManageAnimals(): bool
+    {
+        return match ($this) {
+            self::Admin, self::Staff => true,
+            self::Volunteer, self::Readonly => false,
+        };
+    }
 }

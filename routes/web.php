@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\AnimalController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\InstallerController;
 use App\Http\Middleware\RedirectIfAuthenticated;
@@ -23,6 +24,14 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/', function () {
         return view('home');
     })->name('home');
+
+    Route::get('/animals', [AnimalController::class, 'index'])->name('animals.index');
+    Route::get('/animals/shelter', [AnimalController::class, 'shelter'])->name('animals.shelter');
+    Route::get('/animals/create', [AnimalController::class, 'create'])->name('animals.create');
+    Route::post('/animals', [AnimalController::class, 'store'])->name('animals.store');
+    Route::get('/animals/{animal}', [AnimalController::class, 'show'])->name('animals.show');
+    Route::get('/animals/{animal}/edit', [AnimalController::class, 'edit'])->name('animals.edit');
+    Route::put('/animals/{animal}', [AnimalController::class, 'update'])->name('animals.update');
 
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function (): void {
         Route::get('/', DashboardController::class)->name('dashboard');
