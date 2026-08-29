@@ -20,8 +20,8 @@ return [
     | Application Version
     |--------------------------------------------------------------------------
     |
-    | Reported by GET /health. Bump this when cutting a release; the installer
-    | wizard and settings UI are out of scope for the foundation scaffold.
+    | Reported by GET /health. Bump this when cutting a release. Settings UI
+    | for display date formats remains a later issue (#15).
     |
     */
 

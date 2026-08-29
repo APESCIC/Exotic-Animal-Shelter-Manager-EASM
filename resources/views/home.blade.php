@@ -12,17 +12,9 @@
                 max-width: 40rem;
                 line-height: 1.5;
                 color: #1b1b18;
-                background: #fdfdfc;
             }
             a { color: #1b4332; }
             code { font-size: 0.95em; }
-            @media (prefers-color-scheme: dark) {
-                body {
-                    color: #ededec;
-                    background: #1b1b18;
-                }
-                a { color: #8fbc8f; }
-            }
         </style>
     </head>
     <body>

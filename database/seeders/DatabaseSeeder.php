@@ -2,18 +2,24 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
+    use WithoutModelEvents;
+
     /**
      * Seed the application's database.
-     *
-     * Intentionally empty: a known test account must not be created on a
-     * generic-hosting install. Auth and the first admin user are #11 / #10.
      */
     public function run(): void
     {
-        //
+        // User::factory(10)->create();
+
+        User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+        ]);
     }
 }
