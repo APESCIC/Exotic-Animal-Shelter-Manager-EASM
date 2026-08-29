@@ -3,6 +3,7 @@
 namespace App\Support;
 
 use Carbon\CarbonInterface;
+use Illuminate\Support\Carbon;
 
 class UkDate
 {
@@ -16,7 +17,7 @@ class UkDate
         }
 
         if (is_string($date)) {
-            $date = \Illuminate\Support\Carbon::parse($date);
+            $date = Carbon::parse($date);
         }
 
         return $date->timezone(config('app.timezone'))->format('d/m/Y');
