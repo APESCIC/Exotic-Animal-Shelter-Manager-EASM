@@ -32,11 +32,12 @@
         <h1>{{ config('app.name') }}</h1>
         <p>Self-hosted shelter software for exotic species. One shelter per install. Species stay free-text — there is no dog/cat vocabulary in this product.</p>
         <p>Signed in as {{ auth()->user()->name }} ({{ auth()->user()->role->label() }}).</p>
-        <p>Version {{ config('app.version') }} · locale {{ config('app.locale') }} · timezone {{ config('app.timezone') }}</p>
+        <p>Version {{ config('app.version') }} · locale {{ config('app.locale') }} · timezone {{ config('app.timezone') }} · today {{ \App\Support\UkDate::format(now()) }}</p>
         <nav>
             <a href="{{ url('/health') }}">Health and version</a>
             @if (auth()->user()->role->isAdmin())
                 · <a href="{{ route('admin.dashboard') }}">Administration</a>
+                · <a href="{{ route('admin.settings.edit') }}">Settings</a>
             @endif
             ·
             <form method="post" action="{{ route('logout') }}">

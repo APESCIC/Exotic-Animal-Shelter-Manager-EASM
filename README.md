@@ -4,9 +4,9 @@ Self-hosted software for one exotic-animal shelter per install. Stack: **Laravel
 
 UK-first defaults: locale `en_GB`, timezone `Europe/London`. Display dates as `dd/mm/yyyy` land with settings (#15).
 
-See [AGENTS.md](AGENTS.md) for product constraints and implement order (v0.1.0 through v1.0.0). v0.1.0 continues as #15 settings after auth (#11).
+See [AGENTS.md](AGENTS.md) for product constraints and implement order (v0.1.0 through v1.0.0).
 
-Tracked against [issue #11](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/11) under [epic #2](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/2) / [plan #1](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/1).
+Tracked against [issue #15](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/15) under [epic #2](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/2) / [plan #1](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/1).
 
 ## Hosting matrix
 
@@ -53,7 +53,7 @@ Then:
 
 The wizard writes `.env`, runs migrations, creates that admin (role `admin`), and writes `storage/app/installed`. After that, `/install` will not run again.
 
-Sign in at `/login` with the admin email and password. Roles are admin, staff, volunteer, and readonly. Only admins can open `/admin`. Successful logins are written to `login_events`.
+Sign in at `/login` with the admin email and password. Roles are admin, staff, volunteer, and readonly. Only admins can open `/admin` and change organisation settings (name, locale, timezone). Dates display as `dd/mm/yyyy`. Successful logins are written to `login_events`.
 
 Open `/health`. You should see JSON with `"status":"ok"` and a `version` field.
 
@@ -85,7 +85,6 @@ PHPUnit treats the app as already installed (`APP_INSTALLED=true`) except in ins
 
 ## What this does not include
 
-- Settings UI for org name and date formats ([#15](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/15))
 - Animal records (v0.2 #12), public site, Cloudron OIDC / MyAPES-Account auth copy
 
 The repository is maintained by [APES CIC](https://github.com/APESCIC).

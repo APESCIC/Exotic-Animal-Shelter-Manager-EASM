@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\InstallerController;
 use App\Http\Middleware\RedirectIfAuthenticated;
@@ -23,7 +24,9 @@ Route::middleware('auth')->group(function (): void {
         return view('home');
     })->name('home');
 
-    Route::get('/admin', DashboardController::class)
-        ->middleware('role:admin')
-        ->name('admin.dashboard');
+    Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function (): void {
+        Route::get('/', DashboardController::class)->name('dashboard');
+        Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
+        Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
+    });
 });
