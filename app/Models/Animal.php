@@ -7,6 +7,7 @@ use Database\Factories\AnimalFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 
 class Animal extends Model
@@ -51,6 +52,14 @@ class Animal extends Model
             'non_shelter' => 'boolean',
             'age_years' => 'integer',
         ];
+    }
+
+    /**
+     * @return HasMany<Movement, $this>
+     */
+    public function movements(): HasMany
+    {
+        return $this->hasMany(Movement::class)->orderByDesc('moved_at')->orderByDesc('id');
     }
 
     public function primaryPhotoUrl(): ?string
