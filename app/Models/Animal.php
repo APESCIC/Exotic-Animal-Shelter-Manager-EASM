@@ -1,0 +1,106 @@
+<?php
+
+namespace App\Models;
+
+use App\Enums\AnimalSex;
+use Database\Factories\AnimalFactory;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+
+class Animal extends Model
+{
+    /** @use HasFactory<AnimalFactory> */
+    use HasFactory;
+
+    /**
+     * @var list<string>
+     */
+    protected $fillable = [
+        'name',
+        'species',
+        'breed_type',
+        'sex',
+        'date_of_birth',
+        'age_years',
+        'colour',
+        'identifying_code',
+        'flags',
+        'location',
+        'bonded_animals',
+        'entry_reason',
+        'non_shelter',
+        'deceased_at',
+        'death_reason',
+        'enclosure',
+        'cites',
+        'dwa',
+        'primary_photo_path',
+    ];
+
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'sex' => AnimalSex::class,
+            'date_of_birth' => 'date',
+            'deceased_at' => 'date',
+            'non_shelter' => 'boolean',
+            'age_years' => 'integer',
+        ];
+    }
+
+    public function primaryPhotoUrl(): ?string
+    {
+        if ($this->primary_photo_path === null || $this->primary_photo_path === '') {
+            return null;
+        }
+
+        return Storage::disk('public')->url($this->primary_photo_path);
+    }
+
+    /**
+     * @param  Builder<Animal>  $query
+     * @return Builder<Animal>
+     */
+    public function scopeSearch(Builder $query, ?string $term): Builder
+    {
+        $term = trim((string) $term);
+
+        if ($term === '') {
+            return $query;
+        }
+
+        $like = '%'.$term.'%';
+
+        return $query->where(function (Builder $inner) use ($like): void {
+            $inner->where('name', 'like', $like)
+                ->orWhere('species', 'like', $like)
+                ->orWhere('breed_type', 'like', $like)
+                ->orWhere('identifying_code', 'like', $like)
+                ->orWhere('location', 'like', $like)
+                ->orWhere('colour', 'like', $like)
+                ->orWhere('enclosure', 'like', $like)
+                ->orWhere('cites', 'like', $like)
+                ->orWhere('dwa', 'like', $like);
+        });
+    }
+
+    /**
+     * @param  Builder<Animal>  $query
+     * @return Builder<Animal>
+     */
+    public function scopeAtLocation(Builder $query, ?string $location): Builder
+    {
+        $location = trim((string) $location);
+
+        if ($location === '') {
+            return $query;
+        }
+
+        return $query->where('location', $location);
+    }
+}

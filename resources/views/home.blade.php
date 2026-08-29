@@ -35,6 +35,11 @@
         <p>Version {{ config('app.version') }} · locale {{ config('app.locale') }} · timezone {{ config('app.timezone') }} · today {{ \App\Support\UkDate::format(now()) }}</p>
         <nav>
             <a href="{{ url('/health') }}">Health and version</a>
+            · <a href="{{ route('animals.index') }}">Animals</a>
+            · <a href="{{ route('animals.shelter') }}">Shelter view</a>
+            @if (auth()->user()->role->canManageAnimals())
+                · <a href="{{ route('animals.create') }}">Add animal</a>
+            @endif
             @if (auth()->user()->role->isAdmin())
                 · <a href="{{ route('admin.dashboard') }}">Administration</a>
                 · <a href="{{ route('admin.settings.edit') }}">Settings</a>
