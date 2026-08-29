@@ -3,6 +3,7 @@
 namespace App\Install;
 
 use App\Enums\UserRole;
+use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
 
@@ -44,6 +45,22 @@ class Installer
                 'role' => UserRole::Admin,
             ],
         );
+
+        $existingSettings = Setting::current();
+
+        if ($existingSettings === null) {
+            Setting::query()->create([
+                'organisation_name' => (string) $input['organisation'],
+                'locale' => 'en_GB',
+                'timezone' => (string) $input['timezone'],
+            ]);
+        } else {
+            $existingSettings->update([
+                'organisation_name' => (string) $input['organisation'],
+                'locale' => 'en_GB',
+                'timezone' => (string) $input['timezone'],
+            ]);
+        }
 
         // Write .env last. php artisan serve restarts when .env changes; doing
         // migrate + admin first avoids APP_INSTALLED=true with no admin user.
