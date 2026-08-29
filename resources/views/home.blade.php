@@ -15,12 +15,34 @@
             }
             a { color: #1b4332; }
             code { font-size: 0.95em; }
+            nav { margin: 1rem 0; }
+            nav form { display: inline; }
+            button.linkish {
+                background: none;
+                border: none;
+                padding: 0;
+                font: inherit;
+                color: #1b4332;
+                text-decoration: underline;
+                cursor: pointer;
+            }
         </style>
     </head>
     <body>
         <h1>{{ config('app.name') }}</h1>
         <p>Self-hosted shelter software for exotic species. One shelter per install. Species stay free-text — there is no dog/cat vocabulary in this product.</p>
+        <p>Signed in as {{ auth()->user()->name }} ({{ auth()->user()->role->label() }}).</p>
         <p>Version {{ config('app.version') }} · locale {{ config('app.locale') }} · timezone {{ config('app.timezone') }}</p>
-        <p><a href="{{ url('/health') }}">Health and version</a></p>
+        <nav>
+            <a href="{{ url('/health') }}">Health and version</a>
+            @if (auth()->user()->role->isAdmin())
+                · <a href="{{ route('admin.dashboard') }}">Administration</a>
+            @endif
+            ·
+            <form method="post" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="linkish">Sign out</button>
+            </form>
+        </nav>
     </body>
 </html>

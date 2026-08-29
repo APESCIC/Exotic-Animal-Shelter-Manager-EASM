@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\HealthController;
 use App\Http\Middleware\EnsureInstallerAccess;
+use App\Http\Middleware\EnsureUserHasRole;
+use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -18,8 +20,20 @@ return Application::configure(basePath: dirname(__DIR__))
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->web(append: [
+        $middleware->alias([
+            'role' => EnsureUserHasRole::class,
+        ]);
+
+        $middleware->redirectGuestsTo(fn () => route('login'));
+
+        // Must run before auth so uninstalled hosts reach /install, not /login.
+        $middleware->web(prepend: [
             EnsureInstallerAccess::class,
+        ]);
+
+        $middleware->priority([
+            EnsureInstallerAccess::class,
+            Authenticate::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

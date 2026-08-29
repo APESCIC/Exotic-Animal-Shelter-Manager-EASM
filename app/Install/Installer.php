@@ -2,6 +2,7 @@
 
 namespace App\Install;
 
+use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
 
@@ -40,6 +41,7 @@ class Installer
             [
                 'name' => $input['admin_name'],
                 'password' => $input['admin_password'],
+                'role' => UserRole::Admin,
             ],
         );
 
