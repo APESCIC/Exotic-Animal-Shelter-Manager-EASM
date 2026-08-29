@@ -91,7 +91,7 @@ composer install
 php artisan serve
 ```
 
-Open http://127.0.0.1:8000/install and complete the wizard against a local MySQL/MariaDB database. Node and Vite are optional and are not required to boot, install, or hit `/health`.
+Open http://127.0.0.1:8000/install and complete the wizard against a local MySQL/MariaDB database. The example file and the wizard set `APP_ENV=production` and `APP_DEBUG=false`. For local debug, change those in `.env` after install. Node and Vite are optional and are not required to boot, install, or hit `/health`.
 
 If `php artisan serve` reloads when the wizard writes `.env`, refresh the home page — install has already finished.
 
