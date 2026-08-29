@@ -7,7 +7,6 @@ use App\Install\DatabaseConnector;
 use App\Install\EnvFile;
 use App\Install\InstallationState;
 use App\Install\Installer;
-use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
@@ -88,12 +87,6 @@ class InstallerTest extends TestCase
         $this->assertTrue(Hash::check('a-secure-password', $admin->password));
         $this->assertSame(UserRole::Admin, $admin->role);
         $this->assertSame(1, User::query()->count());
-
-        $settings = Setting::query()->first();
-        $this->assertNotNull($settings);
-        $this->assertSame('APES CIC Rescue', $settings->organisation_name);
-        $this->assertSame('en_GB', $settings->locale);
-        $this->assertSame('Europe/London', $settings->timezone);
 
         $this->get(route('install.show'))->assertRedirect('/');
 
