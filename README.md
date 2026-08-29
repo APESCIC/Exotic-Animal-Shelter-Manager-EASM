@@ -4,7 +4,7 @@ Self-hosted software for one exotic-animal shelter per install. Stack: **Laravel
 
 UK-first defaults: locale `en_GB`, timezone `Europe/London`. Display dates as `dd/mm/yyyy` land with settings (#15), not this scaffold.
 
-See [issue #1](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/1) for product constraints and implement order (v0.1.0 through v1.0.0). `AGENTS.md` is added by [PR #30](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/pull/30) and is not part of this scaffold. This PR is **#9 only**. v0.1.0 continues as #10 installer, then #11 auth/roles, then #15 settings — do not start the next milestone until this foundation sequence is done.
+See [AGENTS.md](AGENTS.md) for product constraints and implement order (v0.1.0 through v1.0.0). This PR is **#9 only**. v0.1.0 continues as #10 installer, then #11 auth/roles, then #15 settings — do not start the next milestone until this foundation sequence is done.
 
 Tracked against [issue #9](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/9) under [epic #2](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/2) / [plan #1](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/1).
 
