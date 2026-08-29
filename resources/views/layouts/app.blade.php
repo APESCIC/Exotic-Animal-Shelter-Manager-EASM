@@ -70,6 +70,10 @@
             @if (auth()->user()?->role?->canManageAnimals())
                 · <a href="{{ route('animals.create') }}">Add animal</a>
             @endif
+            · <a href="{{ route('people.index') }}">People</a>
+            @if (auth()->user()?->role?->canManagePeople())
+                · <a href="{{ route('people.create') }}">Add contact</a>
+            @endif
         </p>
 
         @if (session('status'))

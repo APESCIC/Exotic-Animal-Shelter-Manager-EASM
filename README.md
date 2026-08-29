@@ -6,7 +6,7 @@ UK-first defaults: locale `en_GB`, timezone `Europe/London`. Display dates as `d
 
 See [AGENTS.md](AGENTS.md) for product constraints and implement order (v0.1.0 through v1.0.0).
 
-Tracked against [issue #12](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/12) under [epic #3](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/3) / [plan #1](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/1).
+Tracked against [issue #14](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/14) under [epic #3](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/3) / [plan #1](https://github.com/APESCIC/Exotic-Animal-Shelter-Manager-EASM/issues/1).
 
 ## Hosting matrix
 
@@ -58,6 +58,8 @@ Sign in at `/login` with the admin email and password. Roles are admin, staff, v
 
 Admin and staff can manage animal records at `/animals` (free-text species, primary photo, enclosure/CITES/DWA, find/filter, shelter view by location). Run `php artisan storage:link` once so primary photos are served.
 
+Admin and staff can manage people/contacts at `/people` (categories, banned and homechecked flags, find/filter).
+
 Open `/health`. You should see JSON with `"status":"ok"` and a `version` field.
 
 Development install uses `composer install` (with dev packages) instead of `--no-dev`.
@@ -94,6 +96,6 @@ GitHub Releases are optional and operator-gated: after a merge to `main`, Cursor
 
 ## What this does not include
 
-- People/contacts (#14), movements (#13), lost/found (#28), public site, Cloudron OIDC / MyAPES-Account auth copy
+- Movements (#13), lost/found (#28), public site, Cloudron OIDC / MyAPES-Account auth copy
 
 The repository is maintained by [APES CIC](https://github.com/APESCIC).
