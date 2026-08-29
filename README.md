@@ -14,7 +14,7 @@ Tracked against [issue #10](https://github.com/APESCIC/Exotic-Animal-Shelter-Man
 |-----------|-----|----------|---------------|--------|
 | cPanel shared | 8.3+ (select in MultiPHP) | MySQL 8 or MariaDB 10.6+ | `public/` | One `composer install`. Do not point the site at the repo root. |
 | Plesk | 8.3+ | MySQL or MariaDB | `public/` | Same document-root and Composer step. |
-| VPS (Apache or nginx) | 8.3+ | MySQL or MariaDB | `public/` | HTTPS recommended. No Cloudron packaging or OIDC. |
+| VPS (Apache or nginx) | 8.3+ | MySQL or MariaDB | `public/` | HTTPS recommended. nginx needs `try_files` (below). No Cloudron packaging or OIDC. |
 
 Laravel 13 needs PHP 8.3 or newer. Composer runs at install time only — not on every HTTP request. One shelter per install; this is not multi-tenant SaaS. No Cloudron OIDC or staff login in v0.1.
 
@@ -46,7 +46,7 @@ composer install --no-dev --optimize-autoloader
 Then:
 
 1. Create an empty MySQL or MariaDB database in the host panel.
-2. Point the vhost document root at `public/`.
+2. Point the vhost document root at `public/`. Apache uses `public/.htaccess`. nginx does not — add the front-controller rule below.
 3. Make `storage/` and `bootstrap/cache/` writable by the web server.
 4. Open the site in a browser. You are redirected to `/install`.
 5. Enter database credentials, organisation name, timezone, and the first admin user.
@@ -55,11 +55,32 @@ The wizard writes `.env`, runs migrations, creates that admin, and writes `stora
 
 Open `/health`. You should see JSON with `"status":"ok"` and a `version` field.
 
+### nginx
+
+Changing only the document root is not enough. nginx ignores `public/.htaccess`, so `/health`, `/install`, and other Laravel routes 404 unless PHP-FPM receives them. See also [Laravel 13 nginx deployment](https://laravel.com/docs/13.x/deployment#nginx).
+
+```nginx
+root /var/www/easm/public;
+
+location / {
+    try_files $uri $uri/ /index.php?$query_string;
+}
+
+location ~ \.php$ {
+    fastcgi_pass unix:/run/php/php8.3-fpm.sock; # or 127.0.0.1:9000
+    fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+    include fastcgi_params;
+    try_files $uri =404;
+}
+```
+
+Adjust `root` and `fastcgi_pass` to the host. cPanel and Plesk Apache vhosts already honour `.htaccess`.
+
 Development install uses `composer install` (with dev packages) instead of `--no-dev`.
 
 ## Health and version
 
-`GET /health` returns application status, name, and version. It checks that PHP can open the configured database and does not include secrets, `.env` values, or credentials. It stays available before and after the installer.
+`GET /health` returns application status, name, and version. It checks that PHP can open the configured database and does not include secrets, `.env` values, or credentials. It stays available before and after the installer. MySQL/MariaDB checks use a 2-second connect timeout so a silent network drop returns 503 instead of holding a PHP worker for the driver default (often about 60 seconds).
 
 Laravel's built-in `GET /up` probe remains available.
 
@@ -70,7 +91,7 @@ composer install
 php artisan serve
 ```
 
-Open http://127.0.0.1:8000/install and complete the wizard against a local MySQL/MariaDB database. Node and Vite are optional and are not required to boot, install, or hit `/health`.
+Open http://127.0.0.1:8000/install and complete the wizard against a local MySQL/MariaDB database. The example file and the wizard set `APP_ENV=production` and `APP_DEBUG=false`. For local debug, change those in `.env` after install. Node and Vite are optional and are not required to boot, install, or hit `/health`.
 
 If `php artisan serve` reloads when the wizard writes `.env`, refresh the home page — install has already finished.
 
