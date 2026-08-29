@@ -62,14 +62,24 @@ Finish a milestone before starting the next.
 
 Plan epic is #1 (unmiled).
 
+## Local development (Windows)
+
+Prefer **Laragon** for preview and CLI. See README “Local development” and `.cursor/rules/local-dev.mdc`.
+
+- Source `scripts/local/use-laragon.ps1` before `php` / `composer` / tests.
+- Preview: **http://easm.test** (Apache document root `public/`). Do not start `php artisan serve` when Laragon can serve the app.
+- Interactive DB: Laragon MySQL on `127.0.0.1`. Do not use Docker hostnames (e.g. `easm-mysql`) for local smoke.
+- Do **not** run Pint / `composer format` / `composer lint` mid-work. Lint once only in the ship-gate pre-commit verification block.
+
 ## Ship-gate
 
 Work starts and finishes from a Cursor agent request. Follow `.cursor/rules/ship-gate.mdc` and `.cursor/skills/ship-gate/SKILL.md`:
 
-1. When a slice is ready, present the **commit gate** (never commit silently).
-2. Open/update the PR; watch CI until green; present the **merge gate**.
-3. After merge on `main`, present the **GitHub Release gate** only as an opt-in — create a release when the operator decides, never silently.
-4. **No deploy gate.** Shelters download/clone and install on their own hosting (Composer + `/install`). Do not invent Cloudron or CI deploy steps.
+1. When a slice is ready, run the **pre-commit verification** (full `composer test`, one `composer lint`, Laragon UI smoke when HTTP was touched). On failure, fix or stop — do **not** present the commit gate.
+2. Only after verification passes, present the **commit gate** (never commit silently).
+3. Open/update the PR; watch CI until green; present the **merge gate**.
+4. After merge on `main`, present the **GitHub Release gate** only as an opt-in — create a release when the operator decides, never silently.
+5. **No deploy gate.** Shelters download/clone and install on their own hosting (Composer + `/install`). Do not invent Cloudron or CI deploy steps.
 
 ## GitHub issues
 
