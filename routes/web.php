@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\AnimalController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\InstallerController;
+use App\Http\Controllers\LostFoundReportController;
 use App\Http\Controllers\MovementController;
 use App\Http\Controllers\PersonController;
 use App\Http\Middleware\RedirectIfAuthenticated;
@@ -43,6 +44,13 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/people/{person}', [PersonController::class, 'show'])->name('people.show');
     Route::get('/people/{person}/edit', [PersonController::class, 'edit'])->name('people.edit');
     Route::put('/people/{person}', [PersonController::class, 'update'])->name('people.update');
+
+    Route::get('/lost-found', [LostFoundReportController::class, 'index'])->name('lost-found.index');
+    Route::get('/lost-found/create', [LostFoundReportController::class, 'create'])->name('lost-found.create');
+    Route::post('/lost-found', [LostFoundReportController::class, 'store'])->name('lost-found.store');
+    Route::get('/lost-found/{lostFoundReport}', [LostFoundReportController::class, 'show'])->name('lost-found.show');
+    Route::get('/lost-found/{lostFoundReport}/edit', [LostFoundReportController::class, 'edit'])->name('lost-found.edit');
+    Route::put('/lost-found/{lostFoundReport}', [LostFoundReportController::class, 'update'])->name('lost-found.update');
 
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function (): void {
         Route::get('/', DashboardController::class)->name('dashboard');

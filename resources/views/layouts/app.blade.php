@@ -74,6 +74,10 @@
             @if (auth()->user()?->role?->canManagePeople())
                 · <a href="{{ route('people.create') }}">Add contact</a>
             @endif
+            · <a href="{{ route('lost-found.index') }}">Lost &amp; found</a>
+            @if (auth()->user()?->role?->canManageLostFound())
+                · <a href="{{ route('lost-found.create') }}">Add report</a>
+            @endif
         </p>
 
         @if (session('status'))
