@@ -138,6 +138,6 @@ GitHub Releases are optional and operator-gated: after a merge to `main`, Cursor
 
 ## What this does not include
 
-- Lost/found (#28), public site, Cloudron OIDC / MyAPES-Account auth copy
+- Public site, Cloudron OIDC / MyAPES-Account auth copy
 
 The repository is maintained by [APES CIC](https://github.com/APESCIC).
