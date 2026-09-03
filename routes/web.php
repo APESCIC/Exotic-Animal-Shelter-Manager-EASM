@@ -3,9 +3,12 @@
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\AnimalController;
+use App\Http\Controllers\AnimalObservationController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\DietController;
 use App\Http\Controllers\InstallerController;
 use App\Http\Controllers\LostFoundReportController;
+use App\Http\Controllers\MedicalRecordController;
 use App\Http\Controllers\MovementController;
 use App\Http\Controllers\PersonController;
 use App\Http\Middleware\RedirectIfAuthenticated;
@@ -37,6 +40,19 @@ Route::middleware('auth')->group(function (): void {
     Route::put('/animals/{animal}', [AnimalController::class, 'update'])->name('animals.update');
     Route::get('/animals/{animal}/movements/create', [MovementController::class, 'create'])->name('animals.movements.create');
     Route::post('/animals/{animal}/movements', [MovementController::class, 'store'])->name('animals.movements.store');
+
+    Route::get('/animals/{animal}/medical/create', [MedicalRecordController::class, 'create'])->name('animals.medical.create');
+    Route::post('/animals/{animal}/medical', [MedicalRecordController::class, 'store'])->name('animals.medical.store');
+    Route::get('/medical/{medicalRecord}/edit', [MedicalRecordController::class, 'edit'])->name('medical.edit');
+    Route::put('/medical/{medicalRecord}', [MedicalRecordController::class, 'update'])->name('medical.update');
+
+    Route::get('/animals/{animal}/diets/create', [DietController::class, 'create'])->name('animals.diets.create');
+    Route::post('/animals/{animal}/diets', [DietController::class, 'store'])->name('animals.diets.store');
+    Route::get('/diets/{diet}/edit', [DietController::class, 'edit'])->name('diets.edit');
+    Route::put('/diets/{diet}', [DietController::class, 'update'])->name('diets.update');
+
+    Route::get('/animals/{animal}/observations/create', [AnimalObservationController::class, 'create'])->name('animals.observations.create');
+    Route::post('/animals/{animal}/observations', [AnimalObservationController::class, 'store'])->name('animals.observations.store');
 
     Route::get('/people', [PersonController::class, 'index'])->name('people.index');
     Route::get('/people/create', [PersonController::class, 'create'])->name('people.create');

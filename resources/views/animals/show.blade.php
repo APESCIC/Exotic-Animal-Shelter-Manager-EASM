@@ -66,6 +66,111 @@
         <p><a class="button" href="{{ route('animals.movements.create', $animal) }}">Record movement</a></p>
     @endif
 
+    <h2>Medical</h2>
+    <p class="hint">Vaccinations, tests, and treatments with due / given / expiry dates. Free-text names for exotic schedules.</p>
+    @if ($animal->medicalRecords->isEmpty())
+        <p class="hint">No medical records yet.</p>
+    @else
+        <table>
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Due</th>
+                    <th>Given</th>
+                    <th>Expires</th>
+                    <th>Notes</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($animal->medicalRecords as $record)
+                    <tr>
+                        <td>{{ $record->type->label() }}</td>
+                        <td>{{ $record->name }}</td>
+                        <td>{{ $record->due_on ? \App\Support\UkDate::format($record->due_on) : '—' }}</td>
+                        <td>{{ $record->given_on ? \App\Support\UkDate::format($record->given_on) : '—' }}</td>
+                        <td>{{ $record->expires_on ? \App\Support\UkDate::format($record->expires_on) : '—' }}</td>
+                        <td>{{ $record->notes ?: '—' }}</td>
+                        <td>
+                            @if (auth()->user()?->role?->canManageMedical())
+                                <a href="{{ route('medical.edit', $record) }}">Edit</a>
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @endif
+
+    @if (auth()->user()?->role?->canManageMedical())
+        <p><a class="button" href="{{ route('animals.medical.create', $animal) }}">Add medical record</a></p>
+    @endif
+
+    <h2>Diets</h2>
+    @if ($animal->diets->isEmpty())
+        <p class="hint">No diets recorded yet.</p>
+    @else
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Started</th>
+                    <th>Ended</th>
+                    <th>Details</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($animal->diets as $diet)
+                    <tr>
+                        <td>{{ $diet->name }}</td>
+                        <td>{{ $diet->started_on ? \App\Support\UkDate::format($diet->started_on) : '—' }}</td>
+                        <td>{{ $diet->ended_on ? \App\Support\UkDate::format($diet->ended_on) : '—' }}</td>
+                        <td>{{ $diet->details ?: '—' }}</td>
+                        <td>
+                            @if (auth()->user()?->role?->canManageMedical())
+                                <a href="{{ route('diets.edit', $diet) }}">Edit</a>
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @endif
+
+    @if (auth()->user()?->role?->canManageMedical())
+        <p><a class="button" href="{{ route('animals.diets.create', $animal) }}">Add diet</a></p>
+    @endif
+
+    <h2>Observations</h2>
+    @if ($animal->observations->isEmpty())
+        <p class="hint">No daily observations yet.</p>
+    @else
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>By</th>
+                    <th>Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($animal->observations as $observation)
+                    <tr>
+                        <td>{{ \App\Support\UkDate::format($observation->observed_on) }}</td>
+                        <td>{{ $observation->user?->name ?: '—' }}</td>
+                        <td>{{ $observation->body }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @endif
+
+    @if (auth()->user()?->role?->canManageMedical())
+        <p><a class="button" href="{{ route('animals.observations.create', $animal) }}">Add observation</a></p>
+    @endif
+
     @if (auth()->user()?->role?->canManageAnimals())
         <p><a class="button" href="{{ route('animals.edit', $animal) }}">Edit</a></p>
     @endif
