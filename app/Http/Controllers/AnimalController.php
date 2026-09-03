@@ -79,7 +79,7 @@ class AnimalController extends Controller
 
     public function show(Animal $animal): View
     {
-        $animal->load(['movements.person']);
+        $animal->load(['movements.person', 'medicalRecords', 'diets', 'observations.user']);
 
         return view('animals.show', [
             'animal' => $animal,

@@ -62,6 +62,33 @@ class Animal extends Model
         return $this->hasMany(Movement::class)->orderByDesc('moved_at')->orderByDesc('id');
     }
 
+    /**
+     * @return HasMany<MedicalRecord, $this>
+     */
+    public function medicalRecords(): HasMany
+    {
+        return $this->hasMany(MedicalRecord::class)
+            ->orderByDesc('due_on')
+            ->orderByDesc('given_on')
+            ->orderByDesc('id');
+    }
+
+    /**
+     * @return HasMany<Diet, $this>
+     */
+    public function diets(): HasMany
+    {
+        return $this->hasMany(Diet::class)->orderByDesc('started_on')->orderByDesc('id');
+    }
+
+    /**
+     * @return HasMany<AnimalObservation, $this>
+     */
+    public function observations(): HasMany
+    {
+        return $this->hasMany(AnimalObservation::class)->orderByDesc('observed_on')->orderByDesc('id');
+    }
+
     public function primaryPhotoUrl(): ?string
     {
         if ($this->primary_photo_path === null || $this->primary_photo_path === '') {
